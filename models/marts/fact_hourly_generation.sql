@@ -1,0 +1,40 @@
+with generation as (
+    select * from {{ ref('stg_generation') }}
+),
+
+final as (
+    select
+        -- keys
+        cast(to_date(generation_datetime) as date)  as date_id,
+        hour                                         as hour,
+
+        -- measures
+        total_mwh,
+        natural_gas_mwh,
+        dammed_hydro_mwh,
+        lignite_mwh,
+        river_mwh,
+        import_coal_mwh,
+        wind_mwh,
+        solar_mwh,
+        fuel_oil_mwh,
+        geothermal_mwh,
+        asphaltite_coal_mwh,
+        black_coal_mwh,
+        biomass_mwh,
+        naphta_mwh,
+        lng_mwh,
+        import_export_mwh,
+        waste_heat_mwh,
+
+        -- derived
+        (wind_mwh + solar_mwh + dammed_hydro_mwh + 
+         river_mwh + geothermal_mwh + biomass_mwh)  as renewable_total_mwh,
+
+        -- metadata
+        generation_datetime,
+        loaded_at
+    from generation
+)
+
+select * from final
