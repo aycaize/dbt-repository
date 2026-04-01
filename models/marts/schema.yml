@@ -1,0 +1,98 @@
+version: 2
+
+models:
+  - name: dim_date
+    description: "Tarih boyutu — 2022-2025 arası günlük kayıtlar"
+    columns:
+      - name: date_id
+        description: "Tarih (primary key)"
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_generation_source
+    description: "Üretim kaynağı boyutu"
+    columns:
+      - name: source_id
+        description: "Kaynak ID (primary key)"
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_region
+    description: "Bölge boyutu"
+    columns:
+      - name: region_id
+        description: "Bölge ID (primary key)"
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_price_type
+    description: "Fiyat tipi boyutu"
+    columns:
+      - name: price_type_id
+        description: "Fiyat tipi ID (primary key)"
+        tests:
+          - not_null
+          - unique
+
+  - name: fact_hourly_prices
+    description: "Saatlik PTF/SMF fiyat fact tablosu"
+    columns:
+      - name: date_id
+        description: "Tarih (dim_date foreign key)"
+        tests:
+          - not_null
+      - name: ptf_price_tl
+        description: "PTF fiyatı TL"
+        tests:
+          - not_null
+
+  - name: fact_hourly_generation
+    description: "Saatlik kaynak bazlı üretim fact tablosu"
+    columns:
+      - name: date_id
+        description: "Tarih (dim_date foreign key)"
+        tests:
+          - not_null
+      - name: total_mwh
+        description: "Toplam üretim MWh"
+        tests:
+          - not_null
+
+  - name: fact_hourly_consumption
+    description: "Saatlik tüketim fact tablosu"
+    columns:
+      - name: date_id
+        description: "Tarih (dim_date foreign key)"
+        tests:
+          - not_null
+      - name: consumption_mwh
+        description: "Toplam tüketim MWh"
+        tests:
+          - not_null
+
+  - name: mart_renewable_share
+    description: "Günlük yenilenebilir enerji payı"
+    columns:
+      - name: date_id
+        description: "Tarih"
+        tests:
+          - not_null
+      - name: renewable_share_pct
+        description: "Yenilenebilir enerji yüzdesi"
+        tests:
+          - not_null
+
+  - name: mart_price_volatility
+    description: "Günlük fiyat volatilitesi metrikleri"
+    columns:
+      - name: date_id
+        description: "Tarih"
+        tests:
+          - not_null
+      - name: avg_price_tl
+        description: "Günlük ortalama PTF fiyatı TL"
+        tests:
+          - not_null
