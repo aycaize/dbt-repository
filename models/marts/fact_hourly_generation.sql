@@ -1,14 +1,18 @@
+{{
+    config(
+        materialized='incremental',
+        unique_key='generation_datetime'
+    )
+}}
+
 with generation as (
     select * from {{ ref('stg_generation') }}
 ),
 
 final as (
     select
-        -- keys
         cast(to_date(generation_datetime) as date)  as date_id,
         hour                                         as hour,
-
-        -- measures
         total_mwh,
         natural_gas_mwh,
         dammed_hydro_mwh,
@@ -26,15 +30,15 @@ final as (
         lng_mwh,
         import_export_mwh,
         waste_heat_mwh,
-
-        -- derived
         (wind_mwh + solar_mwh + dammed_hydro_mwh + 
          river_mwh + geothermal_mwh + biomass_mwh)  as renewable_total_mwh,
-
-        -- metadata
         generation_datetime,
         loaded_at
     from generation
+
+    {% if is_incremental() %}
+        where generation_datetime > (select max(generation_datetime) from {{ this }})
+    {% endif %}
 )
 
 select * from final
