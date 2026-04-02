@@ -18,21 +18,35 @@ models:
         tests:
           - not_null
           - unique
-
-  - name: dim_region
-    description: "Bölge boyutu"
-    columns:
-      - name: region_id
-        description: "Bölge ID (primary key)"
+      - name: is_renewable
+        description: "Yenilenebilir enerji kaynağı mı?"
         tests:
           - not_null
-          - unique
+          - accepted_values:
+              arguments:
+                values: [true, false]
 
   - name: dim_price_type
     description: "Fiyat tipi boyutu"
     columns:
       - name: price_type_id
         description: "Fiyat tipi ID (primary key)"
+        tests:
+          - not_null
+          - unique
+      - name: price_type_code
+        description: "Fiyat tipi kodu"
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['PTF', 'SMF', 'PTF-SMF']
+
+  - name: dim_region
+    description: "Bölge boyutu"
+    columns:
+      - name: region_id
+        description: "Bölge ID (primary key)"
         tests:
           - not_null
           - unique
@@ -44,6 +58,10 @@ models:
         description: "Tarih (dim_date foreign key)"
         tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_id
       - name: ptf_price_tl
         description: "PTF fiyatı TL"
         tests:
@@ -56,6 +74,10 @@ models:
         description: "Tarih (dim_date foreign key)"
         tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_id
       - name: total_mwh
         description: "Toplam üretim MWh"
         tests:
@@ -68,6 +90,10 @@ models:
         description: "Tarih (dim_date foreign key)"
         tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_id
       - name: consumption_mwh
         description: "Toplam tüketim MWh"
         tests:
