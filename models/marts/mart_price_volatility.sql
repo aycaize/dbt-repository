@@ -26,6 +26,41 @@ daily as (
     from prices p
     left join date_dim d on p.date_id = d.date_id
     group by 1, 2, 3, 4, 5, 6, 7
+),
+
+with_window_functions as (
+    select
+        *,
+        -- önceki güne göre fiyat değişimi
+        lag(avg_price_tl, 1) over (order by date_id)            as prev_day_avg_price_tl,
+        round(avg_price_tl - lag(avg_price_tl, 1) 
+              over (order by date_id), 2)                        as day_over_day_change_tl,
+        round((avg_price_tl - lag(avg_price_tl, 1) 
+              over (order by date_id)) / 
+              nullif(lag(avg_price_tl, 1) 
+              over (order by date_id), 0) * 100, 2)             as day_over_day_change_pct,
+
+        -- 7 günlük hareketli ortalama
+        round(avg(avg_price_tl) over (
+            order by date_id
+            rows between 6 preceding and current row
+        ), 2)                                                    as moving_avg_7d_tl,
+
+        -- 30 günlük hareketli ortalama
+        round(avg(avg_price_tl) over (
+            order by date_id
+            rows between 29 preceding and current row
+        ), 2)                                                    as moving_avg_30d_tl,
+
+        -- aylık ortalamaya göre sapma
+        round(avg(avg_price_tl) over (
+            partition by year, month_number
+        ), 2)                                                    as monthly_avg_price_tl,
+
+        round(avg_price_tl - avg(avg_price_tl) over (
+            partition by year, month_number
+        ), 2)                                                    as deviation_from_monthly_avg
+    from daily
 )
 
-select * from daily
+select * from with_window_functions
