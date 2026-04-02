@@ -13,6 +13,14 @@ models:
         description: "Piyasa Takas Fiyatı (TL)"
         tests:
           - not_null
+      - name: ptf_price_usd
+        description: "Piyasa Takas Fiyatı (USD)"
+        tests:
+          - not_null
+      - name: ptf_price_eur
+        description: "Piyasa Takas Fiyatı (EUR)"
+        tests:
+          - not_null
       - name: hour
         description: "Saat (00:00 - 23:00)"
         tests:
