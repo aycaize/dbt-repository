@@ -22,6 +22,8 @@ daily as (
         round(stddev(p.ptf_price_tl), 2)                        as price_stddev_tl,
         round(avg(p.ptf_price_usd), 2)                          as avg_price_usd,
         round(avg(p.ptf_price_eur), 2)                          as avg_price_eur,
+        round(min(p.ptf_price_usd), 2)                          as min_price_usd,
+        round(max(p.ptf_price_usd), 2)                          as max_price_usd,
         count(*)                                                 as hour_count
     from prices p
     left join date_dim d on p.date_id = d.date_id
@@ -56,6 +58,17 @@ with_window_functions as (
         round(avg(avg_price_tl) over (
             partition by year, month_number
         ), 2)                                                    as monthly_avg_price_tl,
+        
+        round(avg(avg_price_usd) over (
+            order by date_id
+            rows between 6 preceding and current row
+        ), 2)                                                    as moving_avg_7d_usd,
+
+        -- 30 günlük hareketli ortalama
+        round(avg(avg_price_usd) over (
+            order by date_id
+            rows between 29 preceding and current row
+        ), 2)                                                    as moving_avg_30d_usd,
 
         round(avg_price_tl - avg(avg_price_tl) over (
             partition by year, month_number
