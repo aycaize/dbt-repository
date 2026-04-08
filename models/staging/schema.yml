@@ -51,3 +51,19 @@ models:
         description: "Toplam tüketim (MWh)"
         tests:
           - not_null
+  
+  - name: stg_cpi
+    description: "TCMB EVDS'den çekilen aylık TÜFE verisi"
+    columns:
+      - name: year
+        description: "Yıl"
+        tests:
+          - not_null
+      - name: month_number
+        description: "Ay"
+        tests:
+          - not_null
+      - name: cpi_index
+        description: "TÜFE endeksi"
+        tests:
+          - not_null

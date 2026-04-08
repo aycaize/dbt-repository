@@ -122,3 +122,27 @@ models:
         description: "Günlük ortalama PTF fiyatı TL"
         tests:
           - not_null
+  
+  - name: mart_cpi
+    description: "Aylık TÜFE endeksi, aylık ve yıllık enflasyon oranları"
+    columns:
+      - name: year
+        description: "Yıl"
+        tests:
+          - not_null
+      - name: month_number
+        description: "Ay"
+        tests:
+          - not_null
+      - name: cpi_index
+        description: "TÜFE endeksi"
+        tests:
+          - not_null
+      - name: monthly_inflation_pct
+        description: "Bir önceki aya göre enflasyon yüzdesi"
+      - name: annual_inflation_pct
+        description: "Bir önceki yılın aynı ayına göre enflasyon yüzdesi"
+      - name: cpi_deflator
+        description: "2023 Ocak baz alınarak hesaplanan deflator"
+        tests:
+          - not_null
