@@ -8,3 +8,4 @@ sources:
       - name: raw_prices
       - name: raw_generation
       - name: raw_consumption
+      - name: raw_cpi
