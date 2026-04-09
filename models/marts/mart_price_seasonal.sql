@@ -48,6 +48,7 @@ monthly as (
 
 with_cpi as (
     select
+        date_from_parts(m.year, m.month_number, 1)     as month_start_date,
         m.*,
         c.cpi_index,
         c.cpi_deflator,
