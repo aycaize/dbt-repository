@@ -2,6 +2,12 @@ with source as (
     select * from {{ source('raw', 'raw_generation') }}
 ),
 
+deduped as (
+    select *,
+        row_number() over (partition by date order by loaded_at desc) as rn
+    from source
+),
+
 renamed as (
     select
         date::timestamp_ntz     as generation_datetime,
@@ -24,7 +30,8 @@ renamed as (
         importexport            as import_export_mwh,
         wasteheat               as waste_heat_mwh,
         loaded_at               as loaded_at
-    from source
+    from deduped
+    where rn = 1
 )
 
 select * from renamed
